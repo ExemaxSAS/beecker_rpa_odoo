@@ -13,13 +13,14 @@ CORS = '*'
 class BeeckerOdooSaleOrderApi(http.Controller):
 
     @http.route('/beecker-api/sale_order/create', type="json", auth='none', cors='*')
-    def beecker_create_sale_order(self, partner_id=None, order_line=None, company=1, pricelist_id=1, **kw):
+    def beecker_create_sale_order(self, partner_id=None, order_line=None, company=1, **kw):
         if partner_id:
+            partner = request.env['res.partner'].sudo().search([('id', '=', 'partner_id')], limit=1)
             saleorder = request.env['sale.order'].with_context(mail_create_nosubscribe=True, force_company=company).sudo().create({
                 'partner_id': partner_id,
                 'partner_invoice_id': partner_id,
                 'partner_shipping_id': partner_id,
-                'pricelist_id': pricelist_id,
+                'pricelist_id': partner.pricelist_id,
             })
 
             if saleorder:
@@ -34,7 +35,7 @@ class BeeckerOdooSaleOrderApi(http.Controller):
             return {
                 'name': saleorder.name,
                 'id': saleorder.id,
-                'status': 'ok'
+                'status': 'Ok'
             }
         else:
             return {'status': "Error"}
