@@ -44,3 +44,19 @@ class BeeckerOdooSaleOrderApi(http.Controller):
                 return {'status': "Error"}
         except Exception as e:
             return {'status': "Error", 'error': str(e)}
+
+    @http.route('/beecker-api/sale_order/confirm', type="json", auth='none', cors='*')
+    def beecker_confirm_sale_order(self, db=None, login=None, password=None, sale_order_id=None, **kw):
+        try:
+            uid = request.session.authenticate(db, login, password)
+            if uid:
+                sale_order = request.env['sale.order'].sudo().search([('id', '=', sale_order_id)], limit=1)
+                sale_order_confirm = sale_order.action_confirm()
+                return {
+                    'name': sale_order.name,
+                    'id': saleorder.id,
+                    'confirm': sale_order_confirm,
+                    'status': 'Ok'
+                }
+        except Exception as e:
+            return {'status': "Error", 'error': str(e)}
