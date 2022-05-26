@@ -31,3 +31,17 @@ class BeeckerOdooPartnerApi(http.Controller):
                 return partners
         except Exception as e:
             return {'status': "Error", 'error': str(e)}
+
+    @http.route('/beecker-api/partners/search', type="json", auth='none', cors=CORS)
+    def partners_search(self, db=None, login=None, password=None, name=None, email=None, **kw):
+        try:
+            uid = request.session.authenticate(db, login, password)
+            if uid:
+                if name:
+                    partners = request.env['res.partner'].search_read((['name', '=', name]), offset=offset, fields=['id'])
+                    return partners
+                if email:
+                    partners = request.env['res.partner'].search_read((['email', '=', name]), offset=offset, fields=['id'])
+                    return partners
+        except Exception as e:
+            return {'status': "Error", 'error': str(e)}
