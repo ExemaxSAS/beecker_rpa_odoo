@@ -23,7 +23,7 @@ class BeeckerOdooProductApi(http.Controller):
             return {'status': "Error", 'error': str(e)}
 
     @http.route('/beecker-api/products/get', type="json", auth='none', cors=CORS)
-    def partners_get(self, db=None, login=None, password=None, filters=[], offset=0, **kw):
+    def products_get(self, db=None, login=None, password=None, filters=[], offset=0, **kw):
         try:
             uid = request.session.authenticate(db, login, password)
             if uid:
