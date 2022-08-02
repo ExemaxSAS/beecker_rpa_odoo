@@ -50,3 +50,17 @@ class BeeckerOdooPartnerApi(http.Controller):
                     return partners
         except Exception as e:
             return {'status': "Error", 'error': str(e)}
+
+    @http.route('/beecker-api/partners/create', type="json", auth='none', cors=CORS)
+    def partners_create(self, db=None, login=None, password=None, name='Demo', email=False, **kw):
+        try:
+            uid = request.session.authenticate(db, login, password)
+            if uid:
+                partner = request.env['res.partner'].sudo().create({'name': name, 'email': email})
+                return {
+                    'name': partner.name,
+                    'id': partner.id,
+                    'status': 'Ok'
+                }
+        except Exception as e:
+            return {'status': "Error", 'error': str(e)}

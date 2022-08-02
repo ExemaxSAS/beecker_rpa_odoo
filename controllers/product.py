@@ -28,7 +28,7 @@ class BeeckerOdooProductApi(http.Controller):
             uid = request.session.authenticate(db, login, password)
             if uid:
                 if name:
-                    products = request.env['product.product'].search_read([('name', 'like', name)], limit=20, offset=offset, fields=['name', 'id'])
+                    products = request.env['product.product'].search_read([('name', 'like', name)], limit=20, fields=['name', 'id'])
                 else:
                     products = request.env['product.product'].search_read(filters, limit=20, offset=offset, fields=['name', 'id'])
                 return products
