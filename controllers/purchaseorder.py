@@ -20,10 +20,7 @@ class BeeckerOdooPurchaseOrderApi(http.Controller):
                 if partner_id:
                     partner = request.env['res.partner'].sudo().search([('id', '=', partner_id)], limit=1)
                     purchaseorder = request.env['purchase.order'].with_context(mail_create_nosubscribe=True, force_company=company).sudo().create({
-                        'partner_id': partner_id,
-                        'partner_invoice_id': partner_id,
-                        'partner_shipping_id': partner_id,
-                        'pricelist_id': partner.property_product_pricelist.id,
+                        'partner_id': partner_id
                     })
 
                 if purchaseorder:
