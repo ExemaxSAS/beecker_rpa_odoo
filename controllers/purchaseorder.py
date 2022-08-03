@@ -48,7 +48,7 @@ class BeeckerOdooPurchaseOrderApi(http.Controller):
             uid = request.session.authenticate(db, login, password)
             if uid:
                 purchase_order = request.env['purchase.order'].sudo().search([('id', '=', purchase_order_id)], limit=1)
-                purchase_order_confirm = purchase_order.action_confirm()
+                purchase_order_confirm = purchase_order.button_confirm()
                 return {
                     'name': purchase_order.name,
                     'id': purchase_order.id,
