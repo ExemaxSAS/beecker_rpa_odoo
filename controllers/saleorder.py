@@ -74,3 +74,23 @@ class BeeckerOdooSaleOrderApi(http.Controller):
                 }
         except Exception as e:
             return {'status': "Error", 'error': str(e)}
+
+
+    @http.route('/beecker-api/sale_order/create/invoice', type="json", auth='none', cors='*')
+    def beecker_sale_order_invoice(self, db=None, login=None, password=None, sale_order_id=None, **kw):
+        try:
+            uid = request.session.authenticate(db, login, password)
+            if uid:
+                sale_order = request.env['sale.order'].sudo().search([('id', '=', sale_order_id)], limit=1)
+                if sale_order.state == 'sale' and sale_order.invoice_status == 'to invoice':
+                    sale_order_confirm = sale_order._create_invoices()
+                    return {
+                        'name': sale_order.name,
+                        'id': sale_order.id,
+                        'invoice': sale_order_confirm.id,
+                        'status': 'Ok'
+                    }
+                else:
+                    return {'status': "Error", 'error': 'Sale Order state has to be "sale" and Invoice Status "to invoice".'}
+        except Exception as e:
+            return {'status': "Error", 'error': str(e)}

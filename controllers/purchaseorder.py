@@ -71,3 +71,22 @@ class BeeckerOdooPurchaseOrderApi(http.Controller):
                 }
         except Exception as e:
             return {'status': "Error", 'error': str(e)}
+
+    @http.route('/beecker-api/purchase_order/create/invoice', type="json", auth='none', cors='*')
+    def beecker_purchase_order_invoice(self, db=None, login=None, password=None, purchase_order_id=None, **kw):
+        try:
+            uid = request.session.authenticate(db, login, password)
+            if uid:
+                purchase_order = request.env['purchase.order'].sudo().search([('id', '=', purchase_order_id)], limit=1)
+                if purchase_order.state == 'purchase' and purchase_order.invoice_status == 'to invoice':
+                    purchase_order_confirm = purchase_order.action_create_invoice()
+                    return {
+                        'name': purchase_order.name,
+                        'id': purchase_order.id,
+                        'invoice': purchase_order_confirm['id'],
+                        'status': 'Ok'
+                    }
+                else:
+                    return {'status': "Error", 'error': 'Purchase Order state has to be "purchase" and Invoice Status "to invoice".'}
+        except Exception as e:
+            return {'status': "Error", 'error': str(e)}
