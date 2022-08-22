@@ -41,7 +41,7 @@ class BeeckerOdooProductApi(http.Controller):
             uid = request.session.authenticate(db, login, password)
             if uid:
                 if name:
-                    products = request.env['res.partner'].search_read((['name', '=', name]), offset=offset, fields=['id'])
+                    products = request.env['product.product'].search_read([('name', 'like', name)], offset=offset, fields=['id'])
                     return products
         except Exception as e:
             return {'status': "Error", 'error': str(e)}
